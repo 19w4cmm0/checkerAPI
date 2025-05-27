@@ -49,10 +49,17 @@ module.exports.summarize = async (req, res) => {
        }
 };
 module.exports.getSummarize = async (req, res) => {
-  if (req.body.userId) {
-    const userId = req.body.userId;
-    const response = await Summarize.find({ userId: userId });
-    res.json(response);
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ message: 'Thiếu userId trong body yêu cầu' });
+    }
+
+    const response = await Summarize.find({ userId });
+    res.status(200).json({ data: response });
+  } catch (error) {
+    console.error('Lỗi khi lấy dữ liệu Summarize:', error);
+    res.status(500).json({ message: 'Lỗi server khi lấy dữ liệu Summarize' });
   }
 };
 module.exports.delete = async (req, res) => {
